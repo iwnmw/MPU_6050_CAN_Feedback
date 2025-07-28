@@ -29,8 +29,6 @@ MPU6050 mpu(Wire);
 
 MCP_CAN CAN(SPI_CS_PIN); // Create CAN object with CS pin
 
-unsigned long timer = 0;
-
 void setup() {
   // Setting up CAN bus:
   bool canInitialized = false;
@@ -59,8 +57,6 @@ void setup() {
 
 void loop() {
   mpu.update();
-
-  if(millis() - timer > 100){
     // Serial.print(F("TEMPERATURE: "));Serial.println(mpu.getTemp());
     // Serial.print(F("ACCELERO  X: "));Serial.print(mpu.getAccX());
     // Serial.print("\tY: ");Serial.print(mpu.getAccY());
@@ -77,7 +73,6 @@ void loop() {
     // Serial.print("\tY: ");Serial.print(mpu.getAngleY());
     // Serial.print("\tZ: ");Serial.println(mpu.getAngleZ());
     // Serial.println(F("=====================================================\n"));
-    timer = millis();
 
     // Converting float values to byte arrays for CAN transmission
     float ax = mpu.getAccX();
@@ -102,5 +97,6 @@ void loop() {
     CAN.sendMsgBuf(0x123, 0, 4, rollData);
     CAN.sendMsgBuf(0x124, 0, 4, pitchData);
     CAN.sendMsgBuf(0x125, 0, 4, yawData);
-  }
+    delay(50);
+
 }
